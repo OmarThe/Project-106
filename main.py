@@ -1,31 +1,33 @@
 import plotly.express as px
-import pandas as pd
+import csv
+import numpy as np
 
-# x = [0,1,2,3,4] 
-# y = [0,1,4,9,16]
+def plotFigure(data_path):
+    with open(data_path) as csv_file:
+        df = csv.DictReader("Data3.csv")
+        fig = px.scatter(df,x="Days Present", y="Marks In Percentage")
+        fig.show()
 
-# fig = px.scatter(x,y)
-# fig.show()
+def getDataSource(data_path):
+    marks_in_percentage = []
+    days_present = []
+    with open(data_path) as csv_file:
+        csv_reader = csv.DictReader("Data3.csv")
+        for row in csv_reader:
+            marks_in_percentage.append(float(row["Marks In Percentage"]))
+            days_present.append(float(row["Days Present"]))
 
-df1 = pd.read_csv("Data1.csv")
-df2 = pd.read_csv("Data2.csv")
-df3 = pd.read_csv("Data3.csv")
-df4 = pd.read_csv("Data4.csv")
+    return {"x" : marks_in_percentage, "y": days_present}
 
-# # print(df1)
+def findCorrelation(datasource):
+    correlation = np.corrcoef(datasource["x"], datasource["y"])
+    print("Correlation between Marks in percentage and Days present :-  \n--->",correlation[0,1])
 
-# list = df1["Temperature"].to_list()
+def setup():
+    data_path  = "Data3.csv"
 
-# print(list)
+    datasource = getDataSource(data_path)
+    findCorrelation(datasource)
+    plotFigure(data_path)
 
-fig1 = px.scatter(df1, x ="Temperature", y ="Ice-cream Sales")
-# fig.show()
-
-fig2 = px.scatter(df2, x ="Size of TV", y ="Average time spent watching TV in a week")
-# fig2.show()
-
-fig3 = px.scatter(df3, x ="Marks In Percentage", y ="Days Present")
-# fig3.show()
-
-fig4 = px.scatter(df4, x ="Coffee in ml", y ="sleep in hours")
-# fig4.show()
+setup()
